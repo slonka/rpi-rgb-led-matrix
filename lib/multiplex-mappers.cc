@@ -239,6 +239,63 @@ public:
   }
 };
 
+class P10SingleColorHUB12Mapper : public MultiplexMapperBase {
+public:
+  P10SingleColorHUB12Mapper() : MultiplexMapperBase("P10SingleColorHUB12", 4) {}
+
+  void MapSinglePanel(int x, int y, int *matrix_x, int *matrix_y) const {
+
+    int xBy8 = x/8;
+    int yBy4 = y/4;
+    int tx = xBy8 * 32 + x;
+
+        if (yBy4 == 0) {
+            if (xBy8 == 0) {
+                tx += 24;
+            } else if (xBy8 == 1) {
+                tx += 16;
+            } else if (xBy8 == 2) {
+                tx += 8;
+            } else if (xBy8 == 3) {
+                tx += 0;
+            }
+        } else if (yBy4 == 1) {
+            if (xBy8 == 0) {
+                tx += 16;
+            } else if (xBy8 == 1) {
+                tx += 8;
+            } else if (xBy8 == 2) {
+                tx += 0;
+            } else if (xBy8 == 3) {
+                tx -= 8;
+            }
+        }  else if (yBy4 == 2) {
+            if (xBy8 == 0) {
+                tx += 8;
+            } else if (xBy8 == 1) {
+                tx += 0;
+            } else if (xBy8 == 2) {
+                tx -= 8;
+            } else if (xBy8 == 3) {
+                tx -= 16;
+            }
+        } else if (yBy4 == 3) {
+            if (xBy8 == 0) {
+                tx -= 0;
+            } else if (xBy8 == 1) {
+                tx -= 8;
+            } else if (xBy8 == 2) {
+                tx -= 16;
+            } else if (xBy8 == 3) {
+                tx -= 24;
+            }
+        }
+
+        *matrix_y = y % 4;
+        *matrix_x = tx;
+  }
+};
+
 /*
  * Here is where the registration happens.
  * If you add an instance of the mapper here, it will automatically be
@@ -257,6 +314,7 @@ static MuxMapperList *CreateMultiplexMapperList() {
   result->push_back(new Kaler2ScanMapper());
   result->push_back(new ZStripeMultiplexMapper("ZStripeUneven", 8, 0));
   result->push_back(new P10MapperZ());
+  result->push_back(new P10SingleColorHUB12Mapper());
 
   return result;
 }
