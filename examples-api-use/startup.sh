@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-mkfifo /tmp/ledpipe
+if [ ! -f /tmp/ledpipe ]; then
+    mkfifo /tmp/ledpipe
+fi
 
 echo <>/tmp/ledpipe &
 
